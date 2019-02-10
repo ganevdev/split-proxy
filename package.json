@@ -21,6 +21,7 @@
     "prebuild": "rimraf dist",
     "build": "tsc",
     "jest": "jest",
+    "watch": "jest --watchAll",
     "lint": "eslint --fix \"src/**/*.{ts,tsx,js,jsx}\"",
     "pretty": "prettier --write \"src/**/*.{ts,tsx,js,jsx,json}\""
   },
