@@ -1,0 +1,14 @@
+os:
+  - linux
+  - osx
+language: node_js
+node_js:
+  - '11'
+  - '10'
+  - '9'
+  - '8'
+script:
+  - npm run pretty
+  - npm run lint
+  - npm run jest
+  - npm run build
