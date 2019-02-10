@@ -14,13 +14,15 @@ function atSignExists(proxy: string): boolean {
 
 // got LoginPassword by dot
 function getLoginPassword(proxy: string): { login: string; password: string } {
+  // del protocol
+  const proxyNoProtocol: string = proxy.replace(/.*(?<=\:\/\/)/, '') + '';
   if (atSignExists(proxy)) {
-    const atSignEnd: string = /(?<=@).*/.exec(proxy) + '';
+    const atSignEnd: string = /(?<=@).*/.exec(proxyNoProtocol) + '';
     if (/\./.test(atSignEnd)) {
-      const loginPassword = splitСolon(/.*(?=@)/.exec(proxy) + '');
+      const loginPassword = splitСolon(/.*(?=@)/.exec(proxyNoProtocol) + '');
       return { login: loginPassword.first, password: loginPassword.second };
     } else {
-      const loginPassword = splitСolon(/(?<=@).*/.exec(proxy) + '');
+      const loginPassword = splitСolon(/(?<=@).*/.exec(proxyNoProtocol) + '');
       return { login: loginPassword.first, password: loginPassword.second };
     }
   } else {
@@ -41,14 +43,14 @@ function getIpAddressPort(proxy: string): { ipAddress: string; port: string } {
   // del protocol
   const proxyNoProtocol: string = proxy.replace(/.*(?=\:\/\/)/, '') + '';
   if (atSignExists(proxy)) {
-    const atSignEnd: string = /(?<=@).*/.exec(proxy) + '';
+    const atSignEnd: string = /(?<=@).*/.exec(proxyNoProtocol) + '';
     if (/\./.test(atSignEnd)) {
-      const proxyNoProtocolAtSign = /(?<=@).*/.exec(proxy) + '';
+      const proxyNoProtocolAtSign = /(?<=@).*/.exec(proxyNoProtocol) + '';
       const ipAddress = splitСolon(proxyNoProtocolAtSign).first;
       const port = splitСolon(proxyNoProtocolAtSign).second;
       return { ipAddress, port };
     } else {
-      const proxyNoProtocolAtSign = /.*(?=@)/.exec(proxy) + '';
+      const proxyNoProtocolAtSign = /.*(?=@)/.exec(proxyNoProtocol) + '';
       const ipAddress = splitСolon(proxyNoProtocolAtSign).first;
       const port = splitСolon(proxyNoProtocolAtSign).second;
       return { ipAddress, port };
@@ -85,11 +87,6 @@ function splitProxy(
     password
   };
 }
-
-// console.log(
-//   splitProxy('123.123.2.42:8080@login:password').protocol +
-//     splitProxy('123.123.2.42:8080@login:password').ipAddress
-// );
 
 module.exports = splitProxy;
 export default splitProxy;
