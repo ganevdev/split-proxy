@@ -1,6 +1,4 @@
-function splitСolon(
-  string: string
-): { first: string | null; second: string | null } {
+function splitСolon(string: string): { first: string; second: string } {
   const first = string.split(':')[0];
   const second = string.split(':')[1];
   return { first, second };
@@ -15,9 +13,7 @@ function atSignExists(proxy: string): boolean {
 }
 
 // got LoginPassword by dot
-function getLoginPassword(
-  proxy: string
-): { login: string | null; password: string | null } {
+function getLoginPassword(proxy: string): { login: string; password: string } {
   if (atSignExists(proxy)) {
     const atSignEnd: string = /(?<=@).*/.exec(proxy) + '';
     if (/\./.test(atSignEnd)) {
@@ -28,22 +24,20 @@ function getLoginPassword(
       return { login: loginPassword.first, password: loginPassword.second };
     }
   } else {
-    return { login: null, password: null };
+    return { login: '', password: '' };
   }
 }
 
-function getProtocol(proxy: string): { protocol: string | null } {
+function getProtocol(proxy: string): { protocol: string } {
   if (/\:\/\//.test(proxy)) {
     const protocol = /.*(?=\:\/\/)/.exec(proxy) + '';
     return { protocol: protocol };
   } else {
-    return { protocol: null };
+    return { protocol: '' };
   }
 }
 
-function getIpAddressPort(
-  proxy: string
-): { ipAddress: string | null; port: number | null } {
+function getIpAddressPort(proxy: string): { ipAddress: string; port: string } {
   // del protocol
   const proxyNoProtocol: string = proxy.replace(/.*(?=\:\/\/)/, '') + '';
   if (atSignExists(proxy)) {
@@ -51,17 +45,17 @@ function getIpAddressPort(
     if (/\./.test(atSignEnd)) {
       const proxyNoProtocolAtSign = /(?<=@).*/.exec(proxy) + '';
       const ipAddress = splitСolon(proxyNoProtocolAtSign).first;
-      const port = Number(splitСolon(proxyNoProtocolAtSign).second);
+      const port = splitСolon(proxyNoProtocolAtSign).second;
       return { ipAddress, port };
     } else {
       const proxyNoProtocolAtSign = /.*(?=@)/.exec(proxy) + '';
       const ipAddress = splitСolon(proxyNoProtocolAtSign).first;
-      const port = Number(splitСolon(proxyNoProtocolAtSign).second);
+      const port = splitСolon(proxyNoProtocolAtSign).second;
       return { ipAddress, port };
     }
   } else {
     const ipAddress = splitСolon(proxyNoProtocol).first;
-    const port = Number(splitСolon(proxyNoProtocol).second);
+    const port = splitСolon(proxyNoProtocol).second;
     return { ipAddress, port };
   }
 }
@@ -69,11 +63,11 @@ function getIpAddressPort(
 function splitProxy(
   proxy: string
 ): {
-  protocol: string | null;
-  ipAddress: string | null;
-  port: number | null;
-  login: string | null;
-  password: string | null;
+  protocol: string;
+  ipAddress: string;
+  port: string;
+  login: string;
+  password: string;
 } {
   const login = getLoginPassword(proxy).login;
   const password = getLoginPassword(proxy).password;
