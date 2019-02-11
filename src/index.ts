@@ -12,17 +12,28 @@ function atSignExists(proxy: string): boolean {
   }
 }
 
+function replaceLocalhost(proxy: string): string {
+  return proxy.replace('localhost', 'local.host') + '';
+}
+
+function returnLocalhost(proxy: string): string {
+  return proxy.replace('local.host', 'localhost') + '';
+}
+
+function noProtocol(proxy: string): string {
+  return proxy.replace(/.*(?<=\:\/\/)/, '') + '';
+}
+
 // got LoginPassword by dot
 function getLoginPassword(proxy: string): { login: string; password: string } {
-  // del protocol
-  const proxyNoProtocol: string = proxy.replace(/.*(?<=\:\/\/)/, '') + '';
+  const newProxy: string = noProtocol(replaceLocalhost(proxy));
   if (atSignExists(proxy)) {
-    const atSignEnd: string = /(?<=@).*/.exec(proxyNoProtocol) + '';
+    const atSignEnd: string = /(?<=@).*/.exec(newProxy) + '';
     if (/\./.test(atSignEnd)) {
-      const loginPassword = splitСolon(/.*(?=@)/.exec(proxyNoProtocol) + '');
+      const loginPassword = splitСolon(/.*(?=@)/.exec(newProxy) + '');
       return { login: loginPassword.first, password: loginPassword.second };
     } else {
-      const loginPassword = splitСolon(/(?<=@).*/.exec(proxyNoProtocol) + '');
+      const loginPassword = splitСolon(/(?<=@).*/.exec(newProxy) + '');
       return { login: loginPassword.first, password: loginPassword.second };
     }
   } else {
@@ -40,24 +51,23 @@ function getProtocol(proxy: string): { protocol: string } {
 }
 
 function getIpAddressPort(proxy: string): { ipAddress: string; port: string } {
-  // del protocol
-  const proxyNoProtocol: string = proxy.replace(/.*(?=\:\/\/)/, '') + '';
+  const newProxy: string = noProtocol(replaceLocalhost(proxy));
   if (atSignExists(proxy)) {
-    const atSignEnd: string = /(?<=@).*/.exec(proxyNoProtocol) + '';
+    const atSignEnd: string = /(?<=@).*/.exec(newProxy) + '';
     if (/\./.test(atSignEnd)) {
-      const proxyNoProtocolAtSign = /(?<=@).*/.exec(proxyNoProtocol) + '';
-      const ipAddress = splitСolon(proxyNoProtocolAtSign).first;
-      const port = splitСolon(proxyNoProtocolAtSign).second;
+      const proxyAtSign = /(?<=@).*/.exec(newProxy) + '';
+      const ipAddress = splitСolon(proxyAtSign).first;
+      const port = splitСolon(proxyAtSign).second;
       return { ipAddress, port };
     } else {
-      const proxyNoProtocolAtSign = /.*(?=@)/.exec(proxyNoProtocol) + '';
-      const ipAddress = splitСolon(proxyNoProtocolAtSign).first;
-      const port = splitСolon(proxyNoProtocolAtSign).second;
+      const proxyAtSign = /.*(?=@)/.exec(newProxy) + '';
+      const ipAddress = splitСolon(proxyAtSign).first;
+      const port = splitСolon(proxyAtSign).second;
       return { ipAddress, port };
     }
   } else {
-    const ipAddress = splitСolon(proxyNoProtocol).first;
-    const port = splitСolon(proxyNoProtocol).second;
+    const ipAddress = splitСolon(newProxy).first;
+    const port = splitСolon(newProxy).second;
     return { ipAddress, port };
   }
 }
@@ -71,12 +81,13 @@ function splitProxy(
   login: string;
   password: string;
 } {
+  //
   const login = getLoginPassword(proxy).login;
   const password = getLoginPassword(proxy).password;
   //
   const protocol = getProtocol(proxy).protocol;
   //
-  const ipAddress = getIpAddressPort(proxy).ipAddress;
+  const ipAddress = returnLocalhost(getIpAddressPort(proxy).ipAddress);
   const port = getIpAddressPort(proxy).port;
   //
   return {

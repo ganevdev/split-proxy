@@ -2,6 +2,8 @@ import splitProxy from '../index';
 const getIpAddressPort = require('../index').__get__('getIpAddressPort');
 const getProtocol = require('../index').__get__('getProtocol');
 const getLoginPassword = require('../index').__get__('getLoginPassword');
+const replaceLocalhost = require('../index').__get__('replaceLocalhost');
+const noProtocol = require('../index').__get__('noProtocol');
 
 describe('Functions', () => {
   test('getIpAddressPort', () => {
@@ -27,6 +29,16 @@ describe('Functions', () => {
       password: 'superPassword'
     });
   });
+  test('replaceLocalhost', () => {
+    expect(
+      replaceLocalhost('socks5://superLogin:superPassword@123.123.2.42:8888')
+    ).toEqual('socks5://superLogin:superPassword@123.123.2.42:8888');
+  });
+  test('noProtocol', () => {
+    expect(
+      noProtocol('socks5://superLogin:superPassword@123.123.2.42:8888')
+    ).toEqual('superLogin:superPassword@123.123.2.42:8888');
+  });
 });
 
 describe('Final', () => {
@@ -48,6 +60,26 @@ describe('Final', () => {
       port: '8888',
       login: 'superLogin',
       password: 'superPassword'
+    });
+  });
+  test('socks5://superLogin:superPassword@123.123.2.42:8888', () => {
+    expect(
+      splitProxy('socks5://superLogin:superPassword@123.123.2.42:8888')
+    ).toEqual({
+      protocol: 'socks5',
+      ipAddress: '123.123.2.42',
+      port: '8888',
+      login: 'superLogin',
+      password: 'superPassword'
+    });
+  });
+  test('http://localhost:9005', () => {
+    expect(splitProxy('http://localhost:9005')).toEqual({
+      protocol: 'http',
+      ipAddress: 'localhost',
+      port: '9005',
+      login: '',
+      password: ''
     });
   });
 });

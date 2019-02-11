@@ -13,8 +13,9 @@ splitProxy('123.123.2.42:8080@superLogin:superPassword')
 
 // return this:
 {
+  protocol: '',
   ipAddress: '123.123.2.42',
-  port: 8080,
+  port: '8080',
   login: 'superLogin',
   password: 'superPassword'
 }
@@ -27,7 +28,7 @@ splitProxy(socks5://superLogin:superPassword@123.123.2.42:8080)
 {
   protocol: 'socks5',
   ipAddress: '123.123.2.42',
-  port: 8080,
+  port: '8080',
   login: 'superLogin',
   password: 'superPassword'
 }
@@ -40,6 +41,8 @@ splitProxy('http://localhost:9005')
 {
   protocol: 'http',
   ipAddress: 'localhost',
-  port: 9005
+  port: '9005',
+  login: '',
+  password: ''
 }
 ```
