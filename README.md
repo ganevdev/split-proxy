@@ -1,5 +1,8 @@
 # split-proxy
 
+[![Build Status](https://travis-ci.com/Ganevru/split-proxy.svg?branch=master)](https://travis-ci.com/Ganevru/split-proxy)
+[![npm](https://img.shields.io/npm/v/split-proxy.svg?style=flat-square)](http://npm.im/split-proxy)
+
 Split proxy string into object wish protocol, ipAddress, port, login and password.
 
 ```
