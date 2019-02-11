@@ -12,6 +12,7 @@ npm i split-proxy
 Examples:
 
 ```{js}
+const splitProxy = require('split-proxy')
 splitProxy('123.123.2.42:8080@superLogin:superPassword')
 
 // return this:
@@ -25,6 +26,7 @@ splitProxy('123.123.2.42:8080@superLogin:superPassword')
 ```
 
 ```{js}
+const splitProxy = require('split-proxy')
 splitProxy(socks5://superLogin:superPassword@123.123.2.42:8080)
 
 // return this:
@@ -38,6 +40,7 @@ splitProxy(socks5://superLogin:superPassword@123.123.2.42:8080)
 ```
 
 ```{js}
+const splitProxy = require('split-proxy')
 splitProxy('http://localhost:9005')
 
 // return this:
@@ -51,6 +54,7 @@ splitProxy('http://localhost:9005')
 ```
 
 ```{js}
+const splitProxy = require('split-proxy')
 splitProxy('https://www.example.com:9005')
 
 // return this:
