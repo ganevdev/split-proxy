@@ -24,7 +24,7 @@ function noProtocol(proxy: string): string {
   return proxy.replace(/.*(?<=\:\/\/)/, '') + '';
 }
 
-// got LoginPassword by dot
+// get LoginPassword by dot
 function getLoginPassword(proxy: string): { login: string; password: string } {
   const newProxy: string = noProtocol(replaceLocalhost(proxy));
   if (atSignExists(proxy)) {

@@ -8,7 +8,4 @@ node_js:
   - '9'
   - '8'
 script:
-  - npm run pretty
-  - npm run lint
-  - npm run jest
-  - npm run build
+  - npm run test
