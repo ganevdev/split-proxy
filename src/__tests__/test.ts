@@ -62,17 +62,6 @@ describe('Final', () => {
       password: 'superPassword'
     });
   });
-  test('socks5://superLogin:superPassword@123.123.2.42:8888', () => {
-    expect(
-      splitProxy('socks5://superLogin:superPassword@123.123.2.42:8888')
-    ).toEqual({
-      protocol: 'socks5',
-      ipAddress: '123.123.2.42',
-      port: '8888',
-      login: 'superLogin',
-      password: 'superPassword'
-    });
-  });
   test('http://localhost:9005', () => {
     expect(splitProxy('http://localhost:9005')).toEqual({
       protocol: 'http',

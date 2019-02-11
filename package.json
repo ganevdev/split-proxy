@@ -1,6 +1,6 @@
 {
   "name": "split-proxy",
-  "version": "1.0.1",
+  "version": "1.0.2",
   "description": "split-proxy",
   "keywords": [
     "proxy"
@@ -53,7 +53,7 @@
   },
   "husky": {
     "hooks": {
-      "pre-commit": "npm run prebuild && lint-staged && npm run jest && npm run build"
+      "pre-commit": "npm run prebuild && npm run lint && lint-staged && npm run jest && npm run build"
     }
   },
   "lint-staged": {
