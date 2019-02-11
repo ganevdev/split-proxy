@@ -3,7 +3,7 @@
   "version": "1.0.0",
   "description": "split-proxy",
   "keywords": [
-    "node"
+    "proxy"
   ],
   "homepage": "https://github.com/Ganevru/split-proxy",
   "repository": {

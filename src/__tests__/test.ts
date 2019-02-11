@@ -82,4 +82,13 @@ describe('Final', () => {
       password: ''
     });
   });
+  test('https://www.example.com:9005', () => {
+    expect(splitProxy('https://www.example.com:9005')).toEqual({
+      protocol: 'https',
+      ipAddress: 'www.example.com',
+      port: '9005',
+      login: '',
+      password: ''
+    });
+  });
 });

@@ -46,3 +46,16 @@ splitProxy('http://localhost:9005')
   password: ''
 }
 ```
+
+```{js}
+splitProxy('https://www.example.com:9005')
+
+// return this:
+{
+  protocol: 'https',
+  ipAddress: 'www.example.com',
+  port: '9005',
+  login: '',
+  password: ''
+}
+```
