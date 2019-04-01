@@ -18,10 +18,10 @@
   "main": "dist/index.js",
   "types": "dist/index.d.ts",
   "scripts": {
-    "prepublishOnly": "npm run clean && npm run lint && npm run jest && npm run build",
+    "prepublishOnly": "npm run clean && npm run lint && npm run test && npm run build",
     "clean": "rimraf dist",
     "build": "tsc",
-    "jest": "jest",
+    "test": "jest",
     "watch": "jest --watchAll",
     "lint": "eslint --fix \"src/**/*.{ts,tsx,js,jsx}\"",
     "pretty": "prettier --write \"src/**/*.{ts,tsx,js,jsx,json}\""
