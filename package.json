@@ -1,7 +1,7 @@
 {
   "name": "split-proxy",
-  "version": "1.1.0",
-  "description": "Split proxy string into protocol, ipAddress, port, login and password.",
+  "version": "1.2.0",
+  "description": "Split proxy string into Object: protocol, ipAddress (host), port, login and password.",
   "keywords": [
     "proxy",
     "proxies"
