@@ -26,7 +26,6 @@
     "lint": "eslint --fix \"src/**/*.{ts,tsx,js,jsx}\"",
     "pretty": "prettier --write \"src/**/*.{ts,tsx,js,jsx,json}\""
   },
-  "dependencies": {},
   "devDependencies": {
     "@types/node": "^10.12.24",
     "ts-node": "^8.0.2",

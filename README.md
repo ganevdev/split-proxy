@@ -9,7 +9,7 @@ Split proxy string into object wish protocol, ipAddress, port, login and passwor
 npm i split-proxy
 ```
 
-Examples:
+## Examples:
 
 ```js
 const splitProxy = require('split-proxy');
@@ -66,3 +66,76 @@ splitProxy('https://www.example.com:9005');
 //   password: ''
 // }
 ```
+
+```js
+const splitProxy = require('split-proxy');
+splitProxy('123.123.2.42');
+
+// return this:
+// {
+//   protocol: '',
+//   ipAddress: '123.123.2.42',
+//   port: '',
+//   login: '',
+//   password: ''
+// }
+```
+
+```js
+const splitProxy = require('split-proxy');
+splitProxy('http://123.123.2.42');
+
+// return this:
+// {
+//   protocol: 'http',
+//   ipAddress: '123.123.2.42',
+//   port: '',
+//   login: '',
+//   password: ''
+// }
+```
+
+
+## axios mod examples:
+
+`{ mode: 'axios' }` special mode for use with library [axios](https://www.npmjs.com/package/axios) (with proxy config options) - it returns an object with the same names and formats as required by `axios`. It also never returns empty values.
+
+```js
+const splitProxy = require('split-proxy');
+splitProxy('123.123.2.42:8080@superLogin:superPassword', { mode: 'axios' });
+
+// return this:
+// {
+//   host: '123.123.2.42',
+//   port: 8080,
+//   auth: {
+//     username: 'mikeymike',
+//     password: 'rapunz3l'
+//   }
+// }
+```
+
+```js
+const splitProxy = require('split-proxy');
+splitProxy('123.123.2.42:8080', { mode: 'axios' });
+
+// return this:
+// {
+//   host: '123.123.2.42',
+//   port: 8080
+// }
+```
+
+```js
+const splitProxy = require('split-proxy');
+splitProxy('localhost', { mode: 'axios' });
+
+// return this:
+// {
+//   host: 'localhost'
+// }
+```
+
+## TODO
+
+[node-tunnel](https://github.com/koichik/node-tunnel) mode
