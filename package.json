@@ -1,9 +1,10 @@
 {
   "name": "split-proxy",
-  "version": "1.0.3",
+  "version": "1.1.0",
   "description": "Split proxy string into protocol, ipAddress, port, login and password.",
   "keywords": [
-    "proxy"
+    "proxy",
+    "proxies"
   ],
   "homepage": "https://github.com/Ganevru/split-proxy",
   "repository": {
