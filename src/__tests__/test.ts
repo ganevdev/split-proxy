@@ -214,3 +214,67 @@ describe('splitProxy mode: axios', () => {
     });
   });
 });
+
+describe('splitProxy mode: node-tunnel', () => {
+  test('123.123.2.42', () => {
+    expect(splitProxy('123.123.2.42', { mode: 'node-tunnel' })).toEqual({
+      host: '123.123.2.42'
+    });
+  });
+  test('http://123.123.2.42', () => {
+    expect(splitProxy('http://123.123.2.42', { mode: 'node-tunnel' })).toEqual({
+      host: '123.123.2.42'
+    });
+  });
+  test('123.123.2.42:8080@myLogin:myPassword', () => {
+    expect(
+      splitProxy('123.123.2.42:8080@myLogin:myPassword', {
+        mode: 'node-tunnel'
+      })
+    ).toEqual({
+      host: '123.123.2.42',
+      port: 8080,
+      proxyAuth: 'myLogin:myPassword'
+    });
+  });
+  test('socks5://superLogin:superPassword@123.123.2.42:8888', () => {
+    expect(
+      splitProxy('socks5://superLogin:superPassword@123.123.2.42:8888', {
+        mode: 'node-tunnel'
+      })
+    ).toEqual({
+      host: '123.123.2.42',
+      port: 8888,
+      proxyAuth: 'superLogin:superPassword'
+    });
+  });
+  test('http://localhost:9005', () => {
+    expect(
+      splitProxy('http://localhost:9005', {
+        mode: 'node-tunnel'
+      })
+    ).toEqual({
+      host: 'localhost',
+      port: 9005
+    });
+  });
+  test('https://www.example.com:9005', () => {
+    expect(
+      splitProxy('https://www.example.com:9005', {
+        mode: 'node-tunnel'
+      })
+    ).toEqual({
+      host: 'www.example.com',
+      port: 9005
+    });
+  });
+  test('localhost', () => {
+    expect(
+      splitProxy('localhost', {
+        mode: 'node-tunnel'
+      })
+    ).toEqual({
+      host: 'localhost'
+    });
+  });
+});

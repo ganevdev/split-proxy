@@ -81,7 +81,7 @@ function getIpAddressPort(proxy: string): { ipAddress: string; port: string } {
 }
 
 interface Options {
-  mode: 'axios' | 'default';
+  mode: 'axios' | 'default' | 'node-tunnel';
 }
 
 interface OptionsAxiosReturn {
@@ -91,6 +91,12 @@ interface OptionsAxiosReturn {
     username?: string;
     password?: string;
   };
+}
+
+interface OptionsNodeTunnelReturn {
+  host: string;
+  port?: number;
+  proxyAuth?: string;
 }
 
 interface OptionsDefaultReturn {
@@ -112,7 +118,12 @@ function removeEmpty(obj: any): any {
       delete obj[key];
     } else if (obj[key] && typeof obj[key] === 'object') {
       removeEmpty(obj[key]);
-    } else if (obj[key] == null || obj[key] === '' || obj[key] === 0) {
+    } else if (
+      obj[key] == null ||
+      obj[key] === '' ||
+      obj[key] === 0 ||
+      obj[key] === ':'
+    ) {
       delete obj[key];
     }
     if (
@@ -141,10 +152,26 @@ function axiosMod(proxyObject: OptionsDefaultReturn): OptionsAxiosReturn {
   }
 }
 
+function nodeTunnelMod(
+  proxyObject: OptionsDefaultReturn
+): OptionsNodeTunnelReturn {
+  const nodeTunnelObject = {
+    host: proxyObject.ipAddress,
+    port: Number(proxyObject.port),
+    proxyAuth: proxyObject.login + ':' + proxyObject.password
+  };
+  const nodeTunnelObjectNoEmpty = removeEmpty(nodeTunnelObject);
+  if (nodeTunnelObjectNoEmpty) {
+    return nodeTunnelObjectNoEmpty;
+  } else {
+    return { host: 'localhost' };
+  }
+}
+
 function createSplitProxy(
   proxy: string,
   options: Options
-): OptionsDefaultReturn | OptionsAxiosReturn {
+): OptionsDefaultReturn | OptionsAxiosReturn | OptionsNodeTunnelReturn {
   //
   const login = getLoginPassword(proxy).login;
   const password = getLoginPassword(proxy).password;
@@ -164,6 +191,8 @@ function createSplitProxy(
   //
   if (options.mode === 'axios') {
     return axiosMod(finalProxyObject);
+  } else if (options.mode === 'node-tunnel') {
+    return nodeTunnelMod(finalProxyObject);
   } else {
     return finalProxyObject;
   }
@@ -176,7 +205,7 @@ const defaultOptions = {
 function splitProxy(
   proxy: string,
   options?: Options
-): OptionsDefaultReturn | OptionsAxiosReturn {
+): OptionsDefaultReturn | OptionsAxiosReturn | OptionsNodeTunnelReturn {
   return createSplitProxy(proxy, Object.assign(defaultOptions, options));
 }
 
