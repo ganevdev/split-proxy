@@ -95,7 +95,7 @@ splitProxy('http://123.123.2.42');
 // }
 ```
 
-## axios mod examples
+## axios examples
 
 `{ mode: 'axios' }` special mode for use with library [axios](https://www.npmjs.com/package/axios) (with proxy config options) - it returns an object with the same names and formats as required by `axios`. It also never returns empty values.
 
@@ -135,7 +135,7 @@ splitProxy('localhost', { mode: 'axios' });
 // }
 ```
 
-## node-tunnel mod examples
+## node-tunnel examples
 
 Mode for [node-tunnel](https://github.com/koichik/node-tunnel), returns an object with the same names and formats as required by `node-tunnel`. It also never returns empty values.
 
