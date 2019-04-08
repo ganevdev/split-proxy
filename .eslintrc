@@ -11,5 +11,13 @@
     "sourceType": "module",
     "useJSXTextNode": true,
     "project": "./tsconfig.json"
-  }
+  },
+  "overrides": [
+    {
+      "files": ["*.test.js", "*.test.ts"],
+      "rules": {
+        "@typescript-eslint/explicit-function-return-type": "off"
+      }
+    }
+  ]
 }

@@ -1,7 +1,5 @@
 import splitProxy from '../index';
 
-/* eslint-disable @typescript-eslint/explicit-function-return-type */
-
 describe('splitProxy', () => {
   test('123.123.2.42', () => {
     expect(splitProxy('123.123.2.42')).toEqual({
