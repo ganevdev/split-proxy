@@ -58,119 +58,119 @@ function getProtocol(proxy: string): { protocol: string } {
   }
 }
 
-function getIpAddressPort(proxy: string): { ipAddress: string; port: string } {
+function getHostPort(proxy: string): { host: string; port: string } {
   const newProxy: string = noProtocol(replaceLocalhost(proxy));
   if (atSignExists(proxy)) {
     const atSignEnd: string = /(?<=@).*/.exec(newProxy) + '';
     if (/\./.test(atSignEnd)) {
       const proxyAtSign = /(?<=@).*/.exec(newProxy) + '';
-      const ipAddress = splitСolon(proxyAtSign).first;
+      const host = splitСolon(proxyAtSign).first;
       const port = splitСolon(proxyAtSign).second;
-      return { ipAddress, port };
+      return { host, port };
     } else {
       const proxyAtSign = /.*(?=@)/.exec(newProxy) + '';
-      const ipAddress = splitСolon(proxyAtSign).first;
+      const host = splitСolon(proxyAtSign).first;
       const port = splitСolon(proxyAtSign).second;
-      return { ipAddress, port };
+      return { host, port };
     }
   } else {
-    const ipAddress = splitСolon(newProxy).first;
+    const host = splitСolon(newProxy).first;
     const port = splitСolon(newProxy).second;
-    return { ipAddress, port };
+    return { host, port };
   }
-}
-
-interface Options {
-  mode: 'axios' | 'default' | 'node-tunnel';
 }
 
 interface OptionsAxiosReturn {
   host: string;
-  port?: number;
+  port: number;
   auth?: {
-    username?: string;
-    password?: string;
+    username: string;
+    password: string;
   };
+  protocol?: string;
 }
 
 interface OptionsNodeTunnelReturn {
   host: string;
-  port?: number;
+  port: number;
   proxyAuth?: string;
 }
 
 interface OptionsDefaultReturn {
   protocol: string;
-  ipAddress: string;
+  host: string;
   port: string;
   login: string;
   password: string;
 }
 
 // from https://stackoverflow.com/questions/286141
-function removeEmpty(obj: any): any {
-  Object.keys(obj).forEach((key) => {
-    if (
-      Object.prototype.toString.call(obj[key]) === '[object Date]' &&
-      (obj[key].toString().length === 0 ||
-        obj[key].toString() === 'Invalid Date')
-    ) {
-      delete obj[key];
-    } else if (obj[key] && typeof obj[key] === 'object') {
-      removeEmpty(obj[key]);
-    } else if (
-      obj[key] == null ||
-      obj[key] === '' ||
-      obj[key] === 0 ||
-      obj[key] === ':'
-    ) {
-      delete obj[key];
+function removeEmpty(obj: {}): {} {
+  Object.keys(obj).forEach(
+    (key): void => {
+      if (
+        Object.prototype.toString.call(obj[key]) === '[object Date]' &&
+        (obj[key].toString().length === 0 ||
+          obj[key].toString() === 'Invalid Date')
+      ) {
+        delete obj[key];
+      } else if (obj[key] && typeof obj[key] === 'object') {
+        removeEmpty(obj[key]);
+      } else if (
+        obj[key] == null ||
+        obj[key] === '' ||
+        obj[key] === 0 ||
+        obj[key] === ':'
+      ) {
+        delete obj[key];
+      }
+      if (
+        obj[key] &&
+        typeof obj[key] === 'object' &&
+        Object.keys(obj[key]).length === 0 &&
+        Object.prototype.toString.call(obj[key]) !== '[object Date]'
+      ) {
+        delete obj[key];
+      }
     }
-    if (
-      obj[key] &&
-      typeof obj[key] === 'object' &&
-      Object.keys(obj[key]).length === 0 &&
-      Object.prototype.toString.call(obj[key]) !== '[object Date]'
-    ) {
-      delete obj[key];
-    }
-  });
+  );
   return obj;
+}
+
+function ifEmptyAssignDefault(proxyObject): { host: string; port: number } {
+  if (!proxyObject.host) {
+    Object.assign(proxyObject, { host: 'localhost' });
+  }
+  if (!proxyObject.port) {
+    Object.assign(proxyObject, { port: 80 });
+  }
+  return proxyObject;
 }
 
 function axiosMod(proxyObject: OptionsDefaultReturn): OptionsAxiosReturn {
   const axiosObject = {
-    host: proxyObject.ipAddress,
+    host: proxyObject.host,
     port: Number(proxyObject.port),
-    auth: { username: proxyObject.login, password: proxyObject.password }
+    auth: { username: proxyObject.login, password: proxyObject.password },
+    protocol: proxyObject.protocol
   };
-  const axiosObjectNoEmpty = removeEmpty(axiosObject);
-  if (axiosObjectNoEmpty) {
-    return axiosObjectNoEmpty;
-  } else {
-    return { host: 'localhost' };
-  }
+  return ifEmptyAssignDefault(removeEmpty(axiosObject));
 }
 
 function nodeTunnelMod(
   proxyObject: OptionsDefaultReturn
 ): OptionsNodeTunnelReturn {
   const nodeTunnelObject = {
-    host: proxyObject.ipAddress,
+    host: proxyObject.host,
     port: Number(proxyObject.port),
     proxyAuth: proxyObject.login + ':' + proxyObject.password
   };
-  const nodeTunnelObjectNoEmpty = removeEmpty(nodeTunnelObject);
-  if (nodeTunnelObjectNoEmpty) {
-    return nodeTunnelObjectNoEmpty;
-  } else {
-    return { host: 'localhost' };
-  }
+  return ifEmptyAssignDefault(removeEmpty(nodeTunnelObject));
 }
 
 function createSplitProxy(
   proxy: string,
-  options: Options
+  options: { mode: 'default' | 'axios' | 'node-tunnel' }
 ): OptionsDefaultReturn | OptionsAxiosReturn | OptionsNodeTunnelReturn {
   //
   const login = getLoginPassword(proxy).login;
@@ -178,33 +178,57 @@ function createSplitProxy(
   //
   const protocol = getProtocol(proxy).protocol;
   //
-  const ipAddress = returnLocalhost(getIpAddressPort(proxy).ipAddress);
-  const port = getIpAddressPort(proxy).port;
+  const host = returnLocalhost(getHostPort(proxy).host);
+  const port = getHostPort(proxy).port;
   //
-  const finalProxyObject = {
+  const finalProxyObject: OptionsDefaultReturn = {
     protocol: protocol,
-    ipAddress: ipAddress,
+    host: host,
     port: port,
     login: login,
     password: password
   };
   //
-  if (options.mode === 'axios') {
-    return axiosMod(finalProxyObject);
-  } else if (options.mode === 'node-tunnel') {
-    return nodeTunnelMod(finalProxyObject);
-  } else {
-    return finalProxyObject;
+  switch (options.mode) {
+    case 'axios': {
+      return axiosMod(finalProxyObject);
+    }
+    case 'node-tunnel': {
+      return nodeTunnelMod(finalProxyObject);
+    }
+    case 'default': {
+      return finalProxyObject;
+    }
+    default: {
+      return finalProxyObject;
+    }
   }
 }
 
-const defaultOptions = {
+const defaultOptions: { mode: 'default' } = {
   mode: 'default'
 };
 
+// Variable return types based on string literal type argument
+// https://stackoverflow.com/questions/39700093
+// Overloads
+// http://www.typescriptlang.org/docs/handbook/functions.html
 function splitProxy(
   proxy: string,
-  options?: Options
+  options?: { mode?: 'default' }
+): OptionsDefaultReturn;
+function splitProxy(
+  proxy: string,
+  options?: { mode?: 'axios' }
+): OptionsAxiosReturn;
+function splitProxy(
+  proxy: string,
+  options?: { mode?: 'node-tunnel' }
+): OptionsNodeTunnelReturn;
+//
+function splitProxy(
+  proxy: string,
+  options?: { mode?: 'default' | 'axios' | 'node-tunnel' }
 ): OptionsDefaultReturn | OptionsAxiosReturn | OptionsNodeTunnelReturn {
   return createSplitProxy(proxy, Object.assign(defaultOptions, options));
 }
