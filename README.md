@@ -99,6 +99,8 @@ splitProxy('http://123.123.2.42');
 
 `{ mode: 'axios' }` special mode for use with library [axios](https://www.npmjs.com/package/axios) (with proxy config options) - it returns an object with the same names and formats as required by `axios`. It also never returns empty values.
 
+By default `host: 'localhost'` and `port: 80`.
+
 ```js
 const splitProxy = require('split-proxy');
 splitProxy('123.123.2.42:8080@superLogin:superPassword', { mode: 'axios' });
@@ -131,13 +133,16 @@ splitProxy('localhost', { mode: 'axios' });
 
 // return this:
 // {
-//   host: 'localhost'
+//   host: 'localhost',
+//   port: 80
 // }
 ```
 
 ## node-tunnel examples
 
 Mode for [node-tunnel](https://github.com/koichik/node-tunnel), returns an object with the same names and formats as required by `node-tunnel`. It also never returns empty values.
+
+By default `host: 'localhost'` and `port: 80`.
 
 ```js
 const splitProxy = require('split-proxy');
@@ -168,6 +173,7 @@ splitProxy('localhost', { mode: 'node-tunnel' });
 
 // return this:
 // {
-//   host: 'localhost'
+//   host: 'localhost',
+//   port: 80
 // }
 ```
